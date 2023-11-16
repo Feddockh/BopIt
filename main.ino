@@ -133,7 +133,7 @@ void setup() {
   String songFilename = "test.csv";
   Song song(songFilename);
 
-  song.loadNextNBeats(4);
+  song.loadNextNBeats(8);
 
   // for(uint8_t rotation=0; rotation<4; rotation++) {
   //   Serial.print("rotation = ");
@@ -158,28 +158,12 @@ void setup() {
 
   
 
-
-  /* 
-  Guitar string names:
-
-  E High
-  B
-  G
-  D
-  A
-  E Low
-  */
-
   
 
 }
 
 void loop() {
-  // for(uint8_t rotation=0; rotation<4; rotation++) {
-  //   tft.setRotation(rotation);
-  //   testText();
-  //   delay(1000);
-  // }
+  
 }
 
 bool printBeats(Beat* beats, int beatCount) {
@@ -187,26 +171,18 @@ bool printBeats(Beat* beats, int beatCount) {
   int interval = tft.width()/beatCount;
 
   // Print out the line of chords
-  for (int i=0; i<tft.width(); i+=interval) {
-    tft.setCursor(i, 0);
+  for (int i=0; i*interval<tft.width(); i++) {
+    tft.setCursor(i*interval, 0);
     tft.setTextColor(HX8357_WHITE);
     tft.setTextSize(2); // Character Size 2: 10 x 14
     tft.print(beats[i].getChord().getChordName());
   }
 
   // Print of the line of lyrics
-  for (int i=0; i<tft.width(); i+=interval) {
-    tft.setCursor(i, 15);
+  for (int i=0; i*interval<tft.width(); i++) {
+    tft.setCursor(i*interval, 16);
     tft.setTextColor(HX8357_WHITE);
     tft.setTextSize(2); // Character Size 2: 10 x 14
     tft.print(beats[i].getLyric());
   }
 }
-
-
-
-
-
-
-
-
