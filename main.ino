@@ -101,34 +101,55 @@ void setup() {
   tft.setRotation(1);
   tft.fillScreen(HX8357_BLACK);
 
+  // TODO: Add main menu and song selection here
+
   String songFilename = "test.csv";
   Song song(songFilename);
 
-  song.loadNextNBeats(8);
-  printBeats(song.getChordBuffer(), song.getLyricBuffer(), song.getBeatCount());
+  // TODO: Include metadata with bpm here
+  int bpm = 67;
+
+  int n = 8;
+  int d = 60000/bpm; // delay[ms] = n[beats] * 1/(beats/min * min/sec * sec/ms)
+  // while (n == 8) {
+    song.loadNextNBeats(8);
+    printBeats(song.getChordBuffer(), song.getLyricBuffer(), song.getBeatCount(), HX8357_WHITE);
+    n = song.getBeatCount();
+    for (int i=0; i<n; i++) {
+      printBeat(song.getChordBuffer(), song.getLyricBuffer(), song.getBeatCount(), i, HX8357_YELLOW);
+      delay(d);
+    }
+  // }
+
+
+
 }
 
 void loop() {
   
 }
 
-bool printBeats(String* chordBuffer, String* lyricBuffer, int beatCount) {
-  tft.fillScreen(HX8357_BLACK);
-  int interval = tft.width()/beatCount;
-
-  // Print out the line of chords
-  for (int i=0; i*interval<tft.width(); i++) {
-    tft.setCursor(i*interval, 0);
-    tft.setTextColor(HX8357_WHITE);
-    tft.setTextSize(2); // Character Size 2: 10 x 14
-    tft.print(chordBuffer[i]);
+bool printBeats(String* chordBuffer, String* lyricBuffer, uint8_t beatCount, uint16_t color) {
+  tft.fillScreen(HX8357_BLACK); // TODO: Remove with sectional covering
+  for (uint8_t i=0; i<beatCount; i++) {
+    printBeat(chordBuffer, lyricBuffer, beatCount, i, color);
   }
+}
 
-  // Print of the line of lyrics
-  for (int i=0; i*interval<tft.width(); i++) {
-    tft.setCursor(i*interval, 16);
-    tft.setTextColor(HX8357_WHITE);
-    tft.setTextSize(2); // Character Size 2: 10 x 14
-    tft.print(lyricBuffer[i]);
-  }
+bool printBeat(String* chordBuffer, String* lyricBuffer, uint8_t beatCount, uint8_t beatNumber, uint16_t color) {
+  //tft.fillScreen(HX8357_BLACK); // TODO: Remove with sectional covering
+  uint16_t interval = tft.width()/beatCount;
+
+  if (beatNumber >= beatCount) return false;
+
+  // Print out the chord
+  uint16_t x = beatNumber*interval;
+  tft.setCursor(x, 0);
+  tft.setTextColor(color);
+  tft.setTextSize(2); // Character Size 2: 10 x 14
+  tft.print(chordBuffer[beatNumber]);
+
+  // Print out the lyric
+  tft.setCursor(x, 16);
+  tft.print(lyricBuffer[beatNumber]);
 }
